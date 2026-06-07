@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>اختبار الشخصية - اكتشف شخصيتك الأنمي المناسبة</title>
+    <title>اختبار الشخصية - اكتشف نمط شخصيتك</title>
     <style>
         * {
             margin: 0;
@@ -20,10 +20,10 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
             background: white;
-            border-radius: 25px;
+            border-radius: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
@@ -47,7 +47,7 @@
 
         .progress-bar {
             background: #e0e0e0;
-            height: 8px;
+            height: 6px;
             width: 100%;
         }
 
@@ -69,12 +69,18 @@
 
         .question-card.active {
             display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .question-text {
-            font-size: 20px;
+            font-size: 22px;
             color: #333;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             line-height: 1.5;
             font-weight: 500;
         }
@@ -88,9 +94,9 @@
         .option {
             display: flex;
             align-items: center;
-            padding: 12px 18px;
+            padding: 14px 20px;
             background: #f5f5f5;
-            border-radius: 12px;
+            border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 2px solid transparent;
@@ -111,12 +117,13 @@
             width: 20px;
             height: 20px;
             cursor: pointer;
+            accent-color: #764ba2;
         }
 
         .option label {
             flex: 1;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 16px;
             color: #333;
         }
 
@@ -130,7 +137,7 @@
         .nav-btn {
             padding: 12px 30px;
             border: none;
-            border-radius: 25px;
+            border-radius: 30px;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -142,15 +149,24 @@
             color: #666;
         }
 
+        .prev-btn:hover {
+            background: #d0d0d0;
+        }
+
         .next-btn, .submit-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
 
+        .next-btn:hover, .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
         .gender-section {
             background: #f9f9f9;
             padding: 20px;
-            border-radius: 15px;
+            border-radius: 20px;
             margin-top: 20px;
             text-align: center;
         }
@@ -166,7 +182,7 @@
             padding: 10px 25px;
             border: 2px solid #764ba2;
             background: white;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 16px;
             transition: all 0.3s ease;
@@ -189,78 +205,67 @@
         .personality-badge {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
         }
 
         .personality-code {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: bold;
+            letter-spacing: 2px;
         }
 
-        .anime-character {
+        .personality-name {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        .personality-desc {
             margin-top: 20px;
-            padding: 20px;
-            background: #f5f5f5;
-            border-radius: 15px;
-        }
-
-        .character-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 15px auto;
-            display: block;
-            border: 4px solid #764ba2;
-        }
-
-        .character-name {
-            font-size: 26px;
-            color: #764ba2;
-            margin: 15px 0 5px;
-        }
-
-        .character-source {
-            color: #999;
-            margin-bottom: 15px;
-        }
-
-        .character-desc {
-            color: #555;
-            line-height: 1.6;
+            line-height: 1.7;
             text-align: justify;
         }
 
-        .strengths, .weaknesses {
-            text-align: right;
-            margin-top: 20px;
+        .dimensions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .dimension {
+            flex: 1;
+            background: #f5f5f5;
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 15px;
+            text-align: center;
         }
 
-        .strengths {
-            background: #e8f5e9;
-            border-right: 4px solid #4caf50;
+        .dimension-letter {
+            font-size: 28px;
+            font-weight: bold;
+            color: #764ba2;
         }
 
-        .weaknesses {
-            background: #ffebee;
-            border-right: 4px solid #f44336;
+        .dimension-name {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
         }
 
-        .strengths h4, .weaknesses h4 {
-            margin-bottom: 10px;
-            color: #333;
+        .traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .strengths ul, .weaknesses ul {
-            padding-right: 20px;
-        }
-
-        .strengths li, .weaknesses li {
-            margin: 8px 0;
+        .trait {
+            background: #e8e8e8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
             color: #555;
         }
 
@@ -288,16 +293,17 @@
         @media (max-width: 600px) {
             .questions-area { padding: 20px; }
             .question-text { font-size: 18px; }
-            .option label { font-size: 13px; }
-            .character-name { font-size: 22px; }
+            .option label { font-size: 14px; }
+            .personality-code { font-size: 32px; }
+            .dimensions { flex-direction: column; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎭 اكتشف شخصيتك الأنمي المناسبة</h1>
-            <p>أجب عن 30 سؤالاً لاكتشاف الشخصية الأنمي التي تشبهك</p>
+            <h1>🌟 اكتشف نمط شخصيتك 🌟</h1>
+            <p>أجب عن الأسئلة التالية بدقة لتعرف أي النماذج الشخصية الـ16 يناسبك</p>
         </div>
         
         <div class="progress-bar">
@@ -308,7 +314,7 @@
             <div id="questionsContainer"></div>
             
             <div class="gender-section" id="genderSection">
-                <h3>⚥ أخبرنا عن جنسك</h3>
+                <h3>⚥ أخبرنا عن جنسك (لتخصيص النتيجة)</h3>
                 <div class="gender-buttons">
                     <button class="gender-btn" data-gender="Male">👨 ذكر</button>
                     <button class="gender-btn" data-gender="Female">👩 أنثى</button>
@@ -332,111 +338,106 @@
     </div>
 
     <script>
-        // 30 سؤالاً
+        // 40 سؤالاً مصممة بعناية لقياس الأبعاد الأربعة للشخصية
         const questions = [
-            "عادةً ما أفضّل العمل ضمن فريق بدلاً من العمل بمفردي.",
-            "أستمتع بحفلات الزحام والتعرّف على أناس جدد.",
-            "أميل إلى التفكير في المستقبل أكثر من التفكير في الحاضر.",
-            "أتخذ قراري بناءً على المنطق وليس المشاعر.",
-            "أفضّل أن تكون لدي خطّة محكمة بدلاً من ترك الأمور للصدفة.",
-            "أشعر بالطاقة بعد قضاء وقت مع الأصدقاء.",
-            "أفضّل النظر إلى الصورة الكبيرة بدلاً من التفاصيل الصغيرة.",
-            "أهتم بمشاعر الآخرين قبل المنطق في كثير من الأحيان.",
-            "أفضّل أن أكون مرناً في جدولي بدلاً من الالتزام بخطة صارمة.",
-            "أشعر بالتعب بسرعة عندما أكون في تجمعات كبيرة لفترة طويلة.",
-            "أفضّل العمل في مجال يتطلب إبداعاً أكثر من مجال يتطلب نظاماً.",
-            "أتخذ القرارات بسرعة وألتزم بها.",
-            "أحب أن أكون في مركز الاهتمام.",
-            "أفضّل التعامل مع الحقائق الواقعية أكثر من النظريات.",
-            "أميل إلى تحليل الأمور بعمق قبل اتخاذ أي قرار.",
-            "أستطيع قراءة مشاعر الآخرين بسهولة.",
-            "أستمتع بالمفاجآت والتغييرات غير المتوقعة.",
-            "أفضّل أن يكون لدي أصدقاء مقربين قليلون بدلاً من معارف كثيرين.",
-            "أهتم بالتفاصيل أكثر من الصورة العامة.",
-            "أميل إلى تأجيل القرارات الصعبة لأطول فترة ممكنة.",
-            "أشعر بالرضا عندما أساعد الآخرين حتى لو على حساب نفسي.",
-            "أفضّل المنافسة على التعاون في بيئة العمل.",
-            "أستمتع بمناقشة الأفكار المجردة والنظريات الفلسفية.",
-            "عادةً ما أكون هادئاً في المواقف العصيبة.",
-            "أفضّل اتباع القواعد بدلاً من كسرها.",
-            "أميل إلى التفاؤل ورؤية الجانب المشرق من الأمور.",
-            "أشعر بالانزعاج عندما يتأخر الناس عن المواعيد.",
-            "أستمتع بتجربة هوايات وأنشطة جديدة باستمرار.",
-            "أفضّل التحدث عن مشاعري بدلاً من كبتها.",
-            "أميل إلى النقد والتحليل أكثر من المدح والتشجيع."
+            { text: "أشعر بالنشاط والطاقة بعد قضاء وقت مع مجموعة من الناس.", dim: "EI", reverse: false },
+            { text: "أفضل التركيز على التفاصيل والحقائق بدلاً من الأفكار المجردة.", dim: "SN", reverse: true },
+            { text: "أتخذ قراراتي بناءً على المنطق والتحليل وليس المشاعر.", dim: "TF", reverse: false },
+            { text: "أفضل التخطيط المسبق والالتزام بالجدول على العفوية.", dim: "JP", reverse: false },
+            { text: "أشعر بالتعب والإرهاق بعد التجمعات الاجتماعية الطويلة.", dim: "EI", reverse: true },
+            { text: "أميل إلى التفكير في الاحتمالات المستقبلية والإمكانيات.", dim: "SN", reverse: false },
+            { text: "أهتم كثيراً بمشاعر الآخرين وأتأثر بها.", dim: "TF", reverse: true },
+            { text: "أحب ترك خياراتي مفتوحة وعدم الالتزام بخطط صارمة.", dim: "JP", reverse: true },
+            { text: "أفضل العمل بمفردي على العمل ضمن فريق.", dim: "EI", reverse: true },
+            { text: "أعتمد على حدسي وتخميني أكثر من الحقائق المجردة.", dim: "SN", reverse: false },
+            { text: "العدالة والموضوعية أهم عندي من التعاطف.", dim: "TF", reverse: false },
+            { text: "أشعر بالارتياح عندما تكون أموري منظمة ومرتبة.", dim: "JP", reverse: false },
+            { text: "أتحدث مع كثير من الناس في الحفلات والمناسبات.", dim: "EI", reverse: false },
+            { text: "أحب التعلم النظري والفلسفي أكثر من التطبيقي.", dim: "SN", reverse: false },
+            { text: "أشعر بآلام الآخرين وكأنها آلامي.", dim: "TF", reverse: true },
+            { text: "أتخذ القرارات بسرعة ولا أتردد كثيراً.", dim: "JP", reverse: false },
+            { text: "أفضّل المحادثات العميقة مع شخص واحد على المحادثات السطحية مع مجموعة.", dim: "EI", reverse: true },
+            { text: "أهتم بالواقع العملي أكثر من الخيال والنظريات.", dim: "SN", reverse: true },
+            { text: "الانسجام العاطفي مهم عندي أكثر من المنطق.", dim: "TF", reverse: true },
+            { text: "أكره التأخير وألتزم بالمواعيد بدقة.", dim: "JP", reverse: false },
+            { text: "أستمتع بكوني مركز الاهتمام.", dim: "EI", reverse: false },
+            { text: "أحب الابتكار والخروج عن المألوف.", dim: "SN", reverse: false },
+            { text: "أواجه الصعوبات بمنطقية وهدوء.", dim: "TF", reverse: false },
+            { text: "أفضل المهام المحددة والواضحة على المهام المفتوحة.", dim: "JP", reverse: false },
+            { text: "أحتاج وقتاً لوحدي لأسترخي وأشحن طاقتي.", dim: "EI", reverse: true },
+            { text: "أحب التحدث عن الأفكار والمفاهيم الكبيرة.", dim: "SN", reverse: false },
+            { text: "الرحمة والتسامح أهم عندي من العدالة.", dim: "TF", reverse: true },
+            { text: "أستمتع بالمفاجآت والأمور غير المتوقعة.", dim: "JP", reverse: true },
+            { text: "أتعرف على أشخاص جدد بسهولة في المناسبات.", dim: "EI", reverse: false },
+            { text: "أفضل العمل العملي على العمل النظري.", dim: "SN", reverse: true },
+            { text: "أحلل الأمور بموضوعية حتى لو جرحت مشاعر الآخرين.", dim: "TF", reverse: false },
+            { text: "أخطط لرحلاتي وإجازاتي بدقة قبل السفر.", dim: "JP", reverse: false },
+            { text: "أشعر بالوحدة حتى عندما أكون بين الناس.", dim: "EI", reverse: true },
+            { text: "أحب خوض تجارب جديدة ومختلفة.", dim: "SN", reverse: false },
+            { text: "أفضل العدالة على الرحمة.", dim: "TF", reverse: false },
+            { text: "أغير خططي بسهولة حسب الظروف.", dim: "JP", reverse: true },
+            { text: "أستمتع بالعمل في بيئة تعاونية واجتماعية.", dim: "EI", reverse: false },
+            { text: "أحب تحليل الأمور وفهم أسبابها.", dim: "SN", reverse: false },
+            { text: "أشعر بقلق عندما يكون شخص ما منزعجاً.", dim: "TF", reverse: true },
+            { text: "أنجز مهامي قبل الموعد المطلوب.", dim: "JP", reverse: false }
         ];
 
-        // الشخصيات (نفس الروابط التي أرسلتها)
-        const characters = {
-            'INTJ': { name: 'Lelouch Lamperouge', anime: 'Code Geass', img: 'https://i.imgur.com/7Zq3S0T.png', 
-              desc: 'استراتيجي عبقري، يخطط خطواته بدقة. لديك رؤية ثاقبة للمستقبل وتفضل العمل بمفردك. أنت طموح لا يتوقف عند حدود.',
-              strengths: ['تفكير استراتيجي', 'ثقة عالية', 'تخطيط طويل المدى', 'استقلالية'],
-              weaknesses: ['قد تبدو متعجرفاً', 'صعوبة في التعبير', 'العزلة أحياناً'] },
-            'INTP': { name: 'L', anime: 'Death Note', img: 'https://i.imgur.com/MK2qXyR.png',
-              desc: 'عبقري غريب الأطوار، تحب حل الألغاز. أنت فضولي وتفضل التحليل العميق. تعيش في عالم أفكارك الخاص.',
-              strengths: ['ذكاء حاد', 'إبداع', 'تفكير منطقي', 'فضول علمي'],
-              weaknesses: ['تهمل العلاقات', 'تردد', 'عدم تنظيم'] },
-            'ENTJ': { name: 'Aizen Sousuke', anime: 'Bleach', img: 'https://i.imgur.com/abc123.png',
-              desc: 'قائد بالفطرة، تخطط وتنفذ ببراعة. أنت طموح تسعى للقيادة، وتؤمن بأن الأهداف الكبيرة تتطلب خططاً كبيرة.',
-              strengths: ['قيادة قوية', 'ثقة عالية', 'تنظيم', 'طموح'],
-              weaknesses: ['متسلط', 'نفاد صبر', 'تجاهل المشاعر'] },
-            'ENTP': { name: 'Gojo Satoru', anime: 'Jujutsu Kaisen', img: 'https://i.imgur.com/def456.png',
-              desc: 'شخصية كاريزمية، ذكية، وتحب التحدي. لديك موهبة في النقاش والإقناع، وتستمتع باستكشاف الأفكار الجديدة.',
-              strengths: ['ذكاء حاد', 'كاريزما', 'إبداع', 'ثقة'],
-              weaknesses: ['متغطرس', 'صعوبة في الالتزام', 'عدم صبر'] },
-            'INFJ': { name: 'Itachi Uchiha', anime: 'Naruto', img: 'https://i.imgur.com/ghi789.png',
-              desc: 'شخصية عميقة ومثالية، وحساسة لمشاعر الآخرين. لديك رؤية فريدة للحياة وتسعى لمساعدة الآخرين.',
-              strengths: ['تعاطف عالي', 'حدس قوي', 'مثالية', 'إخلاص'],
-              weaknesses: ['حساسية مفرطة', 'كمالية', 'انطوائية'] },
-            'INFP': { name: 'Steven Universe', anime: 'Steven Universe', img: 'https://i.ibb.co/XkLwCGRX/images-3.png',
-              desc: 'شخصية حالمة ومبدعة، ومليئة بالحب للآخرين. تؤمن بقوة اللطف والصداقة، وتسعى لصنع عالم أفضل.',
-              strengths: ['إبداع', 'تعاطف', 'مثالية', 'مرونة'],
-              weaknesses: ['حساسية عالية', 'تجنب الصراع', 'صعوبة في القرارات'] },
-            'ENFJ': { name: 'Monkey D. Luffy', anime: 'One Piece', img: 'https://i.imgur.com/jkl012.png',
-              desc: 'قائد كاريزمي يلهم من حوله. لديك قدرة على فهم الناس وتحفيزهم لتحقيق أهدافهم.',
-              strengths: ['إلهام', 'تعاطف', 'مهارات اجتماعية', 'كاريزما'],
-              weaknesses: ['تهمل نفسك', 'مثالية مفرطة', 'حساسية'] },
-            'ENFP': { name: 'Amethyst', anime: 'Steven Universe', img: 'https://i.ibb.co/VpzJLxt6/42-423110-steven-universe-amethyst-amethyst-from-steven-universe-costume.jpg',
-              desc: 'شخصية مفعمة بالطاقة والحماس. تحب المرح والمغامرة، وتعيش اللحظة بأقصى درجاتها.',
-              strengths: ['حماس', 'إبداع', 'مرونة', 'صنع المرح'],
-              weaknesses: ['عدم تنظيم', 'تشتت', 'صعوبة في الالتزام'] },
-            'ISTJ': { name: 'Levi Ackerman', anime: 'Attack on Titan', img: 'https://i.imgur.com/mno345.png',
-              desc: 'شخصية عملية ومنظمة، وتضع معايير عالية. يعتمد عليك في الأوقات الصعبة لأنك تفي بوعودك.',
-              strengths: ['موثوقية', 'تنظيم', 'صبر', 'دقة'],
-              weaknesses: ['جامد', 'صعوبة في التكيف', 'نقد لاذع'] },
-            'ISFJ': { name: 'Tohru Honda', anime: 'Fruits Basket', img: 'https://i.imgur.com/pqr678.png',
-              desc: 'شخصية دافئة ومخلصة، وتضع احتياجات الآخرين قبل احتياجاتها. أنت السند الحقيقي لمن حولك.',
-              strengths: ['إخلاص', 'مسؤولية', 'صبر', 'اهتمام بالتفاصيل'],
-              weaknesses: ['إهمال الذات', 'حساسية', 'صعوبة في قول لا'] },
-            'ESTJ': { name: 'Erwin Smith', anime: 'Attack on Titan', img: 'https://i.imgur.com/stu901.png',
-              desc: 'قائد عملي وحازم، ومؤمن بالنظام. أنت من يتخذ القرارات الصعبة وتضع المصلحة العامة أولاً.',
-              strengths: ['قيادة', 'تنظيم', 'عملية', 'سرعة في القرارات'],
-              weaknesses: ['متسلط', 'عدم صبر', 'صلابة'] },
-            'ESFJ': { name: 'Winry Rockbell', anime: 'Fullmetal Alchemist', img: 'https://i.imgur.com/vwx234.png',
-              desc: 'شخصية اجتماعية، مهتمة بالآخرين، وتسعى لخلق الانسجام. أنت قلب أي فريق تعمل معه.',
-              strengths: ['مهارات اجتماعية', 'كرم', 'تنظيم', 'ولاء'],
-              weaknesses: ['حاجة للتقدير', 'حساسية', 'قلق'] },
-            'ISTP': { name: 'Toji Fushiguro', anime: 'Jujutsu Kaisen', img: 'https://i.ibb.co/8yCTCzW/Fl-RPBg-Ha-AAAFwr4.jpg',
-              desc: 'شخصية مستقلة وعملية، وتفضل التعلم بالممارسة. أنت ماهر في حل المشكلات وتتعامل مع الأزمات ببرود.',
-              strengths: ['هدوء', 'مهارات عملية', 'استقلالية', 'تركيز'],
-              weaknesses: ['انعزال', 'صعوبة في التعبير', 'تمرد'] },
-            'ISFP': { name: 'Yuji Itadori', anime: 'Jujutsu Kaisen', img: 'https://i.imgur.com/yza567.png',
-              desc: 'شخصية فنية وحساسة، وتعيش اللحظة. لديك تقدير للجمال وتسعى للانسجام مع محيطك.',
-              strengths: ['حس فني', 'مرونة', 'تعاطف', 'صدق'],
-              weaknesses: ['حساسية', 'تجنب الصراع', 'صعوبة في التخطيط'] },
-            'ESTP': { name: 'Joseph Joestar', anime: 'JoJo', img: 'https://i.imgur.com/bcd890.png',
-              desc: 'شخصية جريئة ومليئة بالطاقة، وتحب المغامرة. أنت سريع البديهة وتتخذ القرارات بسرعة.',
-              strengths: ['شجاعة', 'ذكاء سريع', 'كاريزما', 'ارتجال'],
-              weaknesses: ['اندفاعية', 'عدم صبر', 'تمرد'] },
-            'ESFP': { name: 'Naruto Uzumaki', anime: 'Naruto', img: 'https://i.imgur.com/efg123.png',
-              desc: 'شخصية مفعمة بالحيوية، تحب أن تكون مركز الاهتمام. تعيش اللحظة وتستمتع بكل تفاصيلها.',
-              strengths: ['حماس', 'جاذبية', 'مرونة', 'قدرة على كسب الناس'],
-              weaknesses: ['تشتت', 'عدم تنظيم', 'حساسية'] }
+        // أوصاف أنماط الشخصية الـ16
+        const personalityTypes = {
+            'INTJ': { name: 'الإستراتيجي', 
+              desc: 'أنت مفكر استراتيجي، تحب التخطيط طويل المدى وتحليل الأنظمة المعقدة. تثق بحدسك وعقلك أكثر من مشاعرك، وتسعى دائماً لتطوير نفسك وتحقيق أهدافك الطموحة.',
+              traits: ['استراتيجي', 'طموح', 'واثق', 'مستقل', 'منطقي'] },
+            'INTP': { name: 'المفكر', 
+              desc: 'أنت فيلسوف وعالم في القلب، تحب تحليل الأفكار والنظريات. تفضل المنطق والموضوعية، وتستمتع باستكشاف الأفكار المجردة وحل المشكلات المعقدة.',
+              traits: ['تحليلي', 'إبداعي', 'فضولي', 'موضوعي', 'مرن'] },
+            'ENTJ': { name: 'القائد', 
+              desc: 'أنت قائد بالفطرة، تمتلك رؤية واضحة وتستطيع تحفيز الآخرين لتحقيق الأهداف. تثق بقدراتك وتتخذ القرارات بثقة وحزم.',
+              traits: ['قائد', 'طموح', 'واثق', 'منظم', 'حاسم'] },
+            'ENTP': { name: 'المبتكر', 
+              desc: 'أنت مبدع ومناقش ماهر، تحب تحدي الأفكار السائدة واستكشاف الاحتمالات. تفكيرك سريع ومرن، وتستمتع بالنقاشات الفكرية.',
+              traits: ['مبدع', 'ذكي', 'مناقش', 'مرن', 'فضولي'] },
+            'INFJ': { name: 'الحالم', 
+              desc: 'أنت شخص عميق ومثالي، تمتلك حدساً قوياً وفهماً عميقاً للآخرين. تسعى لإحداث تغيير إيجابي في العالم، وتقدر العلاقات العميقة.',
+              traits: ['مثالي', 'حساس', 'مبدع', 'حكيم', 'ملهم'] },
+            'INFP': { name: 'الشاعر', 
+              desc: 'أنت شاعر وروائي في القلب، تمتلك عالماً داخلياً غنياً بالقيم والمشاعر. تسعى للأصالة والانسجام، وتقدر الجمال والمعنى في الحياة.',
+              traits: ['مثالي', 'مبدع', 'حساس', 'صادق', 'شغوف'] },
+            'ENFJ': { name: 'المعلم', 
+              desc: 'أنت معلم وملهم بالفطرة، تفهم مشاعر الآخرين وتساعدهم على النمو. تمتلك كاريزما طبيعية وتستطيع تحفيز الناس لتحقيق إمكاناتهم.',
+              traits: ['ملهم', 'اجتماعي', 'رحيم', 'كاريزمي', 'منظم'] },
+            'ENFP': { name: 'المستكشف', 
+              desc: 'أنت روح حرة ومتحمسة، تحب الاستكشاف والتجارب الجديدة. تمتلك طاقة إيجابية تجذب الناس إليك، وتقدر الأصالة والتعبير الذاتي.',
+              traits: ['حماسي', 'مبدع', 'اجتماعي', 'مرن', 'فضولي'] },
+            'ISTJ': { name: 'العملي', 
+              desc: 'أنت شخص عملي وموثوق، تعتمد على الحقائق والمنطق. تلتزم بالتزاماتك وتقدر النظام والتنظيم، وتفضل المهام الواضحة والمحددة.',
+              traits: ['موثوق', 'منظم', 'عملي', 'صبور', 'مخلص'] },
+            'ISFJ': { name: 'الحامي', 
+              desc: 'أنت شخص دافئ ومخلص، تضع احتياجات الآخرين قبل احتياجاتك. تمتلك ذاكرة ممتازة للتفاصيل وتقدر التقاليد والروتين.',
+              traits: ['مخلص', 'راعي', 'صبور', 'عملي', 'متواضع'] },
+            'ESTJ': { name: 'المنفذ', 
+              desc: 'أنت منفذ فعال وحازم، تؤمن بالنظام والقوانين. تتخذ القرارات بسرعة وثقة، وتتوقع من الآخرين نفس المستوى من الالتزام.',
+              traits: ['حازم', 'منظم', 'عملي', 'طموح', 'موثوق'] },
+            'ESFJ': { name: 'الراعي', 
+              desc: 'أنت شخص اجتماعي ورحيم، تهتم باحتياجات الآخرين وتسعى لخلق الانسجام. تقدر العلاقات والتقاليد، وتستمتع بمساعدة الناس.',
+              traits: ['اجتماعي', 'رحيم', 'منظم', 'مخلص', 'عملي'] },
+            'ISTP': { name: 'الماهر', 
+              desc: 'أنت شخص ماهر وعملي، تفضل التعلم بالممارسة على النظرية. تتعامل مع الأزمات بهدوئك المعتاد، وتستمتع بحل المشكلات العملية.',
+              traits: ['ماهر', 'هادئ', 'مرن', 'عملي', 'مستقل'] },
+            'ISFP': { name: 'الفنان', 
+              desc: 'أنت فنان وحساس، تعبر عن نفسك من خلال الفن والإبداع. تفضل الحرية والمرونة، وتقدر الجمال والأصالة في الحياة.',
+              traits: ['فنان', 'حساس', 'مرن', 'صادق', 'عطوف'] },
+            'ESTP': { name: 'المغامر', 
+              desc: 'أنت مغامر وجريء، تعيش اللحظة وتسعى للإثارة. تتصرف بسرعة وثقة، وتستمتع بالمخاطرة والتحديات الجديدة.',
+              traits: ['جريء', 'مرن', 'عملي', 'شجاع', 'اجتماعي'] },
+            'ESFP': { name: 'المؤدي', 
+              desc: 'أنت مؤدي وروح الحفلات، تحب إسعاد الناس وجذب انتباههم. تعيش اللحظة بأقصى درجاتها وتستمتع بالتجارب الجديدة.',
+              traits: ['اجتماعي', 'حماسي', 'مرن', 'عفوي', 'مرح'] }
         };
 
         let currentIndex = 0;
-        let answers = new Array(30).fill(null);
+        let answers = new Array(40).fill(null);
         let selectedGender = null;
+        let scores = { EI: 0, SN: 0, TF: 0, JP: 0 };
 
         function renderQuestions() {
             const container = document.getElementById('questionsContainer');
@@ -457,7 +458,7 @@
                 ];
                 
                 card.innerHTML = `
-                    <div class="question-text">${idx+1}. ${q}</div>
+                    <div class="question-text">${idx+1}. ${q.text}</div>
                     <div class="options">
                         ${opts.map(opt => `
                             <div class="option ${answers[idx] === opt.val ? 'selected' : ''}" data-value="${opt.val}">
@@ -483,6 +484,7 @@
                         const card = this.closest('.question-card');
                         const idx = parseInt(card.dataset.index);
                         answers[idx] = val;
+                        updateScore(idx, val);
                         
                         card.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
                         this.classList.add('selected');
@@ -492,31 +494,25 @@
             });
         }
 
+        function updateScore(questionIndex, value) {
+            const q = questions[questionIndex];
+            let score = value;
+            if (q.reverse) score = 6 - value;
+            
+            switch(q.dim) {
+                case 'EI': scores.EI += score; break;
+                case 'SN': scores.SN += score; break;
+                case 'TF': scores.TF += score; break;
+                case 'JP': scores.JP += score; break;
+            }
+        }
+
         function updateProgress() {
             const answered = answers.filter(a => a !== null).length;
-            const percent = (answered / 30) * 100;
+            const percent = (answered / 40) * 100;
             document.getElementById('progressFill').style.width = `${percent}%`;
         }
 
         function showQuestion(index) {
             document.querySelectorAll('.question-card').forEach((card, i) => {
-                if (i === index) card.classList.add('active');
-                else card.classList.remove('active');
-            });
-            
-            document.getElementById('prevBtn').style.display = index === 0 ? 'none' : 'block';
-            if (index === 29) {
-                document.getElementById('nextBtn').style.display = 'none';
-                document.getElementById('submitBtn').style.display = 'block';
-            } else {
-                document.getElementById('nextBtn').style.display = 'block';
-                document.getElementById('submitBtn').style.display = 'none';
-            }
-        }
-
-        function analyzePersonality() {
-            let EI = 0, SN = 0, TF = 0, JP = 0;
-            const eis = [0,1,5,9,12,17];
-            const sns = [2,6,13,18,23];
-            const tfs = [3,7,10,15,21,24,28];
-            const jps = [4,8,11,14,19,20,2
+                if (i === index) card.classList
