@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>اختبار الشخصية - اكتشف شخصيتك الأنمي المناسبة</title>
     <style>
         * {
@@ -16,6 +16,7 @@
             font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             padding: 20px;
             direction: rtl;
+            min-height: 100vh;
         }
 
         .container {
@@ -235,8 +236,13 @@
             margin: 15px 0;
         }
 
+        .character-source {
+            color: #999;
+            margin-bottom: 15px;
+        }
+
         .character-desc {
-            color: #666;
+            color: #555;
             line-height: 1.6;
             text-align: justify;
         }
@@ -260,6 +266,7 @@
 
         .strengths h4, .weaknesses h4 {
             margin-bottom: 10px;
+            color: #333;
         }
 
         .strengths ul, .weaknesses ul {
@@ -268,6 +275,7 @@
 
         .strengths li, .weaknesses li {
             margin: 8px 0;
+            color: #555;
         }
 
         .loading {
@@ -291,15 +299,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px;
-            text-align: center;
-        }
-
         @media (max-width: 600px) {
             .questions-area {
                 padding: 20px;
@@ -309,6 +308,9 @@
             }
             .option label {
                 font-size: 14px;
+            }
+            .character-name {
+                font-size: 22px;
             }
         }
     </style>
@@ -352,374 +354,148 @@
     </div>
 
     <script>
-        // ربط أنواع MBTI بشخصيات الأنمي
+        // الأسئلة المدمجة (30 سؤالاً)
+        const questions = [
+            "عادةً ما أفضّل العمل ضمن فريق بدلاً من العمل بمفردي.",
+            "أستمتع بحفلات الزحام والتعرّف على أناس جدد.",
+            "أميل إلى التفكير في المستقبل أكثر من التفكير في الحاضر.",
+            "أتخذ قراري بناءً على المنطق وليس المشاعر.",
+            "أفضّل أن تكون لدي خطّة محكمة بدلاً من ترك الأمور للصدفة.",
+            "أشعر بالطاقة بعد قضاء وقت مع الأصدقاء.",
+            "أفضّل النظر إلى الصورة الكبيرة بدلاً من التفاصيل الصغيرة.",
+            "أهتم بمشاعر الآخرين قبل المنطق في كثير من الأحيان.",
+            "أفضّل أن أكون مرناً في جدولي بدلاً من الالتزام بخطة صارمة.",
+            "أشعر بالتعب بسرعة عندما أكون في تجمعات كبيرة لفترة طويلة.",
+            "أفضّل العمل في مجال يتطلب إبداعاً أكثر من مجال يتطلب نظاماً.",
+            "أتخذ القرارات بسرعة وألتزم بها.",
+            "أحب أن أكون في مركز الاهتمام.",
+            "أفضّل التعامل مع الحقائق الواقعية أكثر من النظريات.",
+            "أميل إلى تحليل الأمور بعمق قبل اتخاذ أي قرار.",
+            "أستطيع قراءة مشاعر الآخرين بسهولة.",
+            "أستمتع بالمفاجآت والتغييرات غير المتوقعة.",
+            "أفضّل أن يكون لدي أصدقاء مقربين قليلون بدلاً من معارف كثيرين.",
+            "أهتم بالتفاصيل أكثر من الصورة العامة.",
+            "أميل إلى تأجيل القرارات الصعبة لأطول فترة ممكنة.",
+            "أشعر بالرضا عندما أساعد الآخرين حتى لو على حساب نفسي.",
+            "أفضّل المنافسة على التعاون في بيئة العمل.",
+            "أستمتع بمناقشة الأفكار المجردة والنظريات الفلسفية.",
+            "عادةً ما أكون هادئاً في المواقف العصيبة.",
+            "أفضّل اتباع القواعد بدلاً من كسرها.",
+            "أميل إلى التفاؤل ورؤية الجانب المشرق من الأمور.",
+            "أشعر بالانزعاج عندما يتأخر الناس عن المواعيد.",
+            "أستمتع بتجربة هوايات وأنشطة جديدة باستمرار.",
+            "أفضّل التحدث عن مشاعري بدلاً من كبتها.",
+            "أميل إلى النقد والتحليل أكثر من المدح والتشجيع."
+        ];
+
+        // أنواع MBTI مع الشخصيات الأنمي
         const personalityToAnime = {
             'INTJ': {
                 character: 'Lelouch Lamperouge',
                 anime: 'Code Geass',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'استراتيجي عبقري، يخطط خطواته بدقة قبل التنفيذ. لديك رؤية ثاقبة للمستقبل وتفضل العمل بمفردك لتحقيق أهدافك. أنت شخص طموح لا يتوقف عند حدود.',
-                strengths: ['تفكير استراتيجي', 'ثقة عالية بالنفس', 'قدرة على التخطيط طويل المدى', 'استقلالية'],
-                weaknesses: ['قد تبدو متعجرفاً', 'صعوبة في التعبير عن المشاعر', 'العزلة أحياناً']
+                image: 'https://i.imgur.com/7Zq3S0T.png',
+                description: 'استراتيجي عبقري، يخطط خطواته بدقة قبل التنفيذ. لديك رؤية ثاقبة للمستقبل وتفضل العمل بمفردك لتحقيق أهدافك. أنت شخص طموح لا يتوقف عند حدود، وتؤمن بأن الغاية تبرر الوسيلة عندما يتعلق الأمر بتحقيق العدالة.',
+                strengths: ['تفكير استراتيجي حاد', 'ثقة عالية بالنفس', 'قدرة استثنائية على التخطيط طويل المدى', 'استقلالية وقدرة على القيادة', 'ذكاء عاطفي في قراءة الآخرين'],
+                weaknesses: ['قد تبدو متعجرفاً أو بارداً', 'صعوبة في التعبير عن المشاعر الحقيقية', 'العزلة أحياناً عن المقربين', 'الغموض وعدم الوضوح للآخرين']
             },
             'INTP': {
                 character: 'L',
                 anime: 'Death Note',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'عبقري غريب الأطوار، تحب حل الألغاز والمشكلات المعقدة. أنت شخص فضولي بطبيعتك وتفضل التحليل العميق لكل شيء حولك.',
-                strengths: ['ذكاء حاد', 'إبداع في حل المشكلات', 'تفكير منطقي', 'فضول علمي'],
-                weaknesses: ['قد تهمل العلاقات الاجتماعية', 'تردد في اتخاذ القرارات', 'عدم تنظيم']
+                image: 'https://i.imgur.com/MK2qXyR.png',
+                description: 'عبقري غريب الأطوار، تحب حل الألغاز والمشكلات المعقدة. أنت شخص فضولي بطبيعتك وتفضل التحليل العميق لكل شيء حولك. تعيش في عالم أفكارك الخاص وقد تبدو غريباً للآخرين، لكن عقلك هو سلاحك الأقوى.',
+                strengths: ['ذكاء حاد وقدرة تحليلية فائقة', 'إبداع في حل المشكلات بطرق غير تقليدية', 'تفكير منطقي وجامد عاطفياً', 'فضول علمي لا يشبع', 'موضوعية وحيادية'],
+                weaknesses: ['قد تهمل العلاقات الاجتماعية', 'تردد في اتخاذ القرارات المصيرية', 'عدم تنظيم في الحياة اليومية', 'العزلة والانطوائية المفرطة']
             },
             'ENTJ': {
                 character: 'Aizen Sousuke',
                 anime: 'Bleach',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'قائد بالفطرة، تخطط وتنفذ ببراعة. أنت شخص طموح تسعى للقيادة والسيطرة، وتؤمن بأن الأهداف الكبيرة تتطلب خططاً كبيرة.',
-                strengths: ['قيادة قوية', 'ثقة عالية', 'قدرة على التنظيم', 'طموح لا حدود له'],
-                weaknesses: ['قد تكون متسلطاً', 'نفاد صبر مع البطيئين', 'تجاهل مشاعر الآخرين']
+                image: 'https://i.imgur.com/abc123.png',
+                description: 'قائد بالفطرة، تخطط وتنفذ ببراعة. أنت شخص طموح تسعى للقيادة والسيطرة، وتؤمن بأن الأهداف الكبيرة تتطلب خططاً كبيرة ومكراً. أنت لا تترك الأمور للصدفة بل تصنعها بنفسك.',
+                strengths: ['قيادة قوية وكاريزما عالية', 'ثقة مطلقة بالنفس', 'قدرة فائقة على التنظيم والتخطيط', 'طموح لا حدود له', 'سعة صبر في تنفيذ الخطط طويلة المدى'],
+                weaknesses: ['قد تكون متسلطاً ومتعجرفاً', 'نفاد صبر مع البطيئين والأقل كفاءة', 'تجاهل مشاعر الآخرين أحياناً', 'الغطرسة التي قد تؤدي لسقوطك']
             },
             'ENTP': {
                 character: 'Gojo Satoru',
                 anime: 'Jujutsu Kaisen',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'شخصية كاريزمية، ذكية، وتحب التحدي. لديك موهبة في النقاش والإقناع، وتستمتع باستكشاف الأفكار الجديدة.',
-                strengths: ['ذكاء حاد', 'كاريزما عالية', 'إبداع', 'قدرة على الارتجال'],
-                weaknesses: ['قد تبدو متغطرساً', 'صعوبة في الالتزام', 'عدم صبر']
+                image: 'https://i.imgur.com/def456.png',
+                description: 'شخصية كاريزمية، ذكية، وتحب التحدي. لديك موهبة في النقاش والإقناع، وتستمتع باستكشاف الأفكار الجديدة. أنت تعرف قيمتك ولا تخشى إظهارها، بل تتباهى بها أحياناً.',
+                strengths: ['ذكاء حاد وفطنة', 'كاريزما عالية تجذب الناس', 'إبداع وقدرة على الارتجال', 'ثقة عالية بالنفس', 'روح دعابة وتسلية'],
+                weaknesses: ['قد تبدو متغطرساً ومغروراً', 'صعوبة في الالتزام طويل المدى', 'عدم صبر مع الروتين والملل', 'الاستهتار أحياناً بالعواقب']
             },
             'INFJ': {
                 character: 'Itachi Uchiha',
                 anime: 'Naruto',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'شخصية عميقة، مثالية، وحساسة جداً لمشاعر الآخرين. لديك رؤية فريدة للحياة وتسعى دائماً لمساعدة الآخرين.',
-                strengths: ['تعاطف عالي', 'حدس قوي', 'مثالية', 'إخلاص'],
-                weaknesses: ['حساسية مفرطة', 'كمالية', 'انطوائية']
+                image: 'https://i.imgur.com/ghi789.png',
+                description: 'شخصية عميقة، مثالية، وحساسة جداً لمشاعر الآخرين. لديك رؤية فريدة للحياة وتسعى دائماً لمساعدة الآخرين، حتى لو تطلب ذلك التضحية بنفسك. أنت لغز للكثيرين لكنك تعرف نفسك جيداً.',
+                strengths: ['تعاطف عالي وفهم عميق للآخرين', 'حدس قوي يكاد يكون خارقاً', 'مثالية وإخلاص للمبادئ', 'إخلاص تام لمن تحب', 'حكمة تفوق العمر'],
+                weaknesses: ['حساسية مفرطة تجاه النقد والظلم', 'كمالية قد تؤذي نفسك', 'انطوائية وعزلة اختيارية', 'العناد في معتقداتك']
             },
             'INFP': {
                 character: 'Steven Universe',
                 anime: 'Steven Universe',
                 image: 'https://i.ibb.co/XkLwCGRX/images-3.png',
-                description: 'شخصية حالمة، مبدعة، ومليئة بالحب للآخرين. تؤمن بقوة اللطف والصداقة، وتسعى لصنع عالم أفضل.',
-                strengths: ['إبداع', 'تعاطف', 'مثالية', 'إخلاص للقيم'],
-                weaknesses: ['حساسية عالية', 'تجنب الصراع', 'صعوبة في اتخاذ القرارات']
+                description: 'شخصية حالمة، مبدعة، ومليئة بالحب للآخرين. تؤمن بقوة اللطف والصداقة، وتسعى لصنع عالم أفضل للجميع. أنت ترى الخير في كل شخص حتى يثبت العكس.',
+                strengths: ['إبداع وخيال واسع', 'تعاطف لا محدود مع الآخرين', 'مثالية وإخلاص للقيم النبيلة', 'قدرة على الاستماع وفهم المشاعر', 'مرونة وتقبل للاختلاف'],
+                weaknesses: ['حساسية عالية قد تؤدي للإحباط', 'تجنب الصراع حتى لو كان ضرورياً', 'صعوبة في اتخاذ القرارات الصعبة', 'الميل للهروب من الواقع أحياناً']
             },
             'ENFJ': {
                 character: 'Monkey D. Luffy',
                 anime: 'One Piece',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'قائد كاريزمي يلهم من حوله. لديك قدرة فطرية على فهم الناس وتحفيزهم لتحقيق أهدافهم.',
-                strengths: ['قدرة على الإلهام', 'تعاطف عالي', 'مهارات اجتماعية ممتازة', 'كاريزما'],
-                weaknesses: ['قد تهمل نفسك', 'مثالية مفرطة', 'حساسية للنقد']
+                image: 'https://i.imgur.com/jkl012.png',
+                description: 'قائد كاريزمي يلهم من حوله. لديك قدرة فطرية على فهم الناس وتحفيزهم لتحقيق أهدافهم. أنت تجعل الآخرين يؤمنون بأنفسهم أكثر مما يؤمنون، وهذا هو سر قوتك الحقيقية.',
+                strengths: ['قدرة فريدة على الإلهام والتحفيز', 'تعاطف عالي وفهم لاحتياجات الآخرين', 'مهارات اجتماعية ممتازة', 'كاريزما طاغية', 'إخلاص وولاء للأصدقاء'],
+                weaknesses: ['قد تهمل احتياجاتك الخاصة', 'مثالية مفرطة قد تصدم بالواقع', 'حساسية عالية للنقد والرفض', 'الاندفاع أحياناً في العلاقات']
             },
             'ENFP': {
                 character: 'Amethyst',
                 anime: 'Steven Universe',
                 image: 'https://i.ibb.co/VpzJLxt6/42-423110-steven-universe-amethyst-amethyst-from-steven-universe-costume.jpg',
-                description: 'شخصية مفعمة بالطاقة والحماس. تحب المرح والمغامرة، وتعيش اللحظة بأقصى درجاتها. أنت روح الحفلات ومصدر الإيجابية لمحيطك.',
-                strengths: ['حماس لا ينضب', 'إبداع', 'مرونة', 'قدرة على صنع المرح'],
-                weaknesses: ['عدم تنظيم', 'تشتت الانتباه', 'صعوبة في الالتزام طويل المدى']
+                description: 'شخصية مفعمة بالطاقة والحماس. تحب المرح والمغامرة، وتعيش اللحظة بأقصى درجاتها. أنت روح الحفلات ومصدر الإيجابية لمحيطك، وتجعل الجميع يشعرون بالسعادة بوجودك.',
+                strengths: ['حماس لا ينضب وطاقة إيجابية', 'إبداع وعفوية في التصرف', 'مرونة وقدرة على التكيف مع أي ظرف', 'قدرة على صنع المرح أينما ذهبت', 'صدق ووضوح في التعامل'],
+                weaknesses: ['عدم تنظيم وفوضوية', 'تشتت الانتباه بسهولة', 'صعوبة في الالتزام طويل المدى', 'التهرب من المسؤوليات الجادة']
             },
             'ISTJ': {
                 character: 'Levi Ackerman',
                 anime: 'Attack on Titan',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'شخصية عملية، منظمة، وتضع المعايير العالية لنفسها وللآخرين. أنت تعتمد عليك في الأوقات الصعبة.',
-                strengths: ['موثوقية عالية', 'تنظيم ممتاز', 'صبر', 'دقة في العمل'],
-                weaknesses: ['قد تكون جامداً', 'صعوبة في التكيف مع التغيير', 'نقد لاذع']
+                image: 'https://i.imgur.com/mno345.png',
+                description: 'شخصية عملية، منظمة، وتضع المعايير العالية لنفسها وللآخرين. أنت تعتمد عليك في الأوقات الصعبة لأنك تفي بوعودك دائماً. النظام والنظافة ليسا مجرد ترف بل ضرورة حياتية.',
+                strengths: ['موثوقية عالية جداً', 'تنظيم ممتاز ودقة في التفاصيل', 'صبر وقدرة على التحمل', 'دقة في العمل واهتمام بالجودة', 'ولاء والتزام بالعهود'],
+                weaknesses: ['قد تكون جامداً وغير مرن', 'صعوبة في التكيف مع التغيير المفاجئ', 'نقد لاذع للآخرين وللنفس', 'القسوة أحياناً في التعامل']
             },
             'ISFJ': {
                 character: 'Tohru Honda',
                 anime: 'Fruits Basket',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'شخصية دافئة، مخلصة، وتضع احتياجات الآخرين قبل احتياجاتها. أنت السند الحقيقي لمن حولك.',
-                strengths: ['إخلاص كبير', 'حس مسؤولية عالي', 'صبر', 'اهتمام بالتفاصيل'],
-                weaknesses: ['إهمال الذات', 'حساسية مفرطة', 'صعوبة في قول "لا"']
+                image: 'https://i.imgur.com/pqr678.png',
+                description: 'شخصية دافئة، مخلصة، وتضع احتياجات الآخرين قبل احتياجاتها. أنت السند الحقيقي لمن حولك، وتبذل قصارى جهدك لإسعادهم حتى لو كلفك ذلك الكثير.',
+                strengths: ['إخلاص كبير وتفانٍ في العلاقات', 'حس مسؤولية عالي والتزام', 'صبر لا حدود له', 'اهتمام بالتفاصيل الصغيرة التي تسعد الآخرين', 'تواضع ولطف'],
+                weaknesses: ['إهمال الذات والاحتياجات الشخصية', 'حساسية مفرطة تجاه النقد', 'صعوبة في قول "لا" للآخرين', 'القلق الزائد على من تحب']
             },
             'ESTJ': {
                 character: 'Erwin Smith',
                 anime: 'Attack on Titan',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'قائد عملي، حازم، ومؤمن بالنظام والقوانين. أنت من يتخذ القرارات الصعبة عندما يحتاجها الآخرون.',
-                strengths: ['قيادة قوية', 'تنظيم ممتاز', 'عملية', 'اتخاذ قرارات سريعة'],
-                weaknesses: ['قد تكون متسلطاً', 'عدم صبر مع الأخطاء', 'صلابة']
+                image: 'https://i.imgur.com/stu901.png',
+                description: 'قائد عملي، حازم، ومؤمن بالنظام والقوانين. أنت من يتخذ القرارات الصعبة عندما يحتاجها الآخرون، وتضع المصلحة العامة فوق أي اعتبار شخصي.',
+                strengths: ['قيادة قوية وحازمة', 'تنظيم ممتاز واهتمام بالتفاصيل', 'عملية وواقعية في اتخاذ القرارات', 'سرعة في اتخاذ القرارات المصيرية', 'شجاعة في تحمل المسؤولية'],
+                weaknesses: ['قد تكون متسلطاً ومفرطاً في الحزم', 'عدم صبر مع الأخطاء والضعف', 'صلابة وعدم مرونة', 'تجاهل المشاعر الفردية']
             },
             'ESFJ': {
                 character: 'Winry Rockbell',
                 anime: 'Fullmetal Alchemist',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'شخصية اجتماعية، مهتمة بالآخرين، وتسعى دائماً لخلق الانسجام. أنت قلب أي فريق تعمل معه.',
-                strengths: ['مهارات اجتماعية ممتازة', 'كرم', 'تنظيم', 'ولاء'],
-                weaknesses: ['حاجة دائمة للتقدير', 'حساسية للنقد', 'قلق زائد عن الآخرين']
+                image: 'https://i.imgur.com/vwx234.png',
+                description: 'شخصية اجتماعية، مهتمة بالآخرين، وتسعى دائماً لخلق الانسجام. أنت قلب أي فريق تعمل معه، وتجعل الجميع يشعرون بالانتماء والتقدير.',
+                strengths: ['مهارات اجتماعية ممتازة', 'كرم وعطاء بلا حدود', 'تنظيم واهتمام بالتفاصيل', 'ولاء وإخلاص للأصدقاء', 'قدرة على خلق الانسجام'],
+                weaknesses: ['حاجة دائمة للتقدير والمدح', 'حساسية عالية للنقد', 'قلق زائد عن الآخرين', 'صعوبة في التعامل مع الصراعات']
             },
             'ISTP': {
                 character: 'Toji Fushiguro',
                 anime: 'Jujutsu Kaisen',
                 image: 'https://i.ibb.co/8yCTCzW/Fl-RPBg-Ha-AAAFwr4.jpg',
-                description: 'شخصية مستقلة، عملية، وتفضل التعلم بالممارسة. أنت ماهر في حل المشكلات العملية وتتعامل مع الأزمات ببرود.',
-                strengths: ['هدوء في الأزمات', 'مهارات عملية عالية', 'استقلالية', 'قدرة على التركيز'],
-                weaknesses: ['انعزال اجتماعي', 'صعوبة في التعبير عن المشاعر', 'تمرد على القواعد']
+                description: 'شخصية مستقلة، عملية، وتفضل التعلم بالممارسة. أنت ماهر في حل المشكلات العملية وتتعامل مع الأزمات ببرود واتزان. لا تحب الكلام الكثير بل الأفعال.',
+                strengths: ['هدوء في الأزمات ورباطة جأش', 'مهارات عملية عالية', 'استقلالية وعدم اعتماد على الآخرين', 'قدرة على التركيز في اللحظة الحالية', 'ذكاء حركي'],
+                weaknesses: ['انعزال اجتماعي أحياناً', 'صعوبة في التعبير عن المشاعر', 'تمرد على القواعد والتعليمات', 'الملل السريع من الروتين']
             },
             'ISFP': {
                 character: 'Yuji Itadori',
                 anime: 'Jujutsu Kaisen',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'شخصية فنية، حساسة، وتعيش اللحظة. لديك تقدير عميق للجمال وتسعى للانسجام مع محيطك.',
-                strengths: ['حس فني عالي', 'مرونة', 'تعاطف', 'صدق'],
-                weaknesses: ['حساسية مفرطة', 'تجنب الصراع', 'صعوبة في التخطيط']
-            },
-            'ESTP': {
-                character: 'Joseph Joestar',
-                anime: 'JoJo Bizarre Adventure',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'شخصية جريئة، مليئة بالطاقة، وتحب المغامرة. أنت سريع البديهة وتتخذ القرارات بسرعة.',
-                strengths: ['شجاعة', 'ذكاء سريع', 'كاريزما', 'مهارات اجتماعية'],
-                weaknesses: ['اندفاعية', 'عدم صبر', 'تمرد على القواعد']
-            },
-            'ESFP': {
-                character: 'Naruto Uzumaki',
-                anime: 'Naruto',
-                image: 'https://i.imgur.com/placeholder.jpg',
-                description: 'شخصية مفعمة بالحيوية، تحب أن تكون مركز الاهتمام. أنت تعيش اللحظة وتستمتع بكل تفاصيلها.',
-                strengths: ['حماس', 'جاذبية', 'مرونة', 'قدرة على كسب الناس'],
-                weaknesses: ['تشتت', 'عدم تنظيم', 'حساسية للنقد']
-            }
-        };
-
-        let questions = [];
-        let currentQuestionIndex = 0;
-        let userAnswers = [];
-        let selectedGender = null;
-
-        // جلب الأسئلة من API
-        async function fetchQuestions() {
-            try {
-                const response = await fetch('https://16personalities-api.com/api/personality/questions');
-                if (!response.ok) throw new Error('فشل في جلب الأسئلة');
-                const data = await response.json();
-                questions = data;
-                userAnswers = new Array(questions.length).fill(null);
-                renderQuestions();
-                updateProgress();
-            } catch (error) {
-                console.error('Error fetching questions:', error);
-                document.getElementById('questionsContainer').innerHTML = `
-                    <div class="error-message">
-                        ⚠️ عذراً، حدث خطأ في تحميل الأسئلة. يرجى تحديث الصفحة والمحاولة مرة أخرى.
-                    </div>
-                `;
-            }
-        }
-
-        // عرض الأسئلة
-        function renderQuestions() {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
-            
-            questions.forEach((q, idx) => {
-                const card = document.createElement('div');
-                card.className = 'question-card';
-                if (idx === 0) card.classList.add('active');
-                card.dataset.index = idx;
-                
-                // ترجمة قيم الإجابات
-                const answerOptions = [
-                    { value: -3, label: 'لا أوافق بشدة' },
-                    { value: -2, label: 'لا أوافق إلى حد ما' },
-                    { value: -1, label: 'لا أوافق قليلاً' },
-                    { value: 0, label: 'محايد' },
-                    { value: 1, label: 'أوافق قليلاً' },
-                    { value: 2, label: 'أوافق إلى حد ما' },
-                    { value: 3, label: 'أوافق بشدة' }
-                ];
-                
-                card.innerHTML = `
-                    <div class="question-text">${q.text}</div>
-                    <div class="options">
-                        ${answerOptions.map(opt => `
-                            <div class="option ${userAnswers[idx] === opt.value ? 'selected' : ''}" data-value="${opt.value}">
-                                <input type="radio" name="q${idx}" value="${opt.value}" id="q${idx}_${opt.value}" ${userAnswers[idx] === opt.value ? 'checked' : ''}>
-                                <label for="q${idx}_${opt.value}">${opt.label}</label>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                
-                container.appendChild(card);
-            });
-            
-            attachOptionListeners();
-        }
-        
-        function attachOptionListeners() {
-            document.querySelectorAll('.option').forEach(opt => {
-                opt.addEventListener('click', (e) => {
-                    const radio = opt.querySelector('input');
-                    if (radio) {
-                        radio.checked = true;
-                        const value = parseInt(opt.dataset.value);
-                        const card = opt.closest('.question-card');
-                        const index = parseInt(card.dataset.index);
-                        userAnswers[index] = value;
-                        
-                        // تحديث المظهر
-                        card.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-                        opt.classList.add('selected');
-                    }
-                });
-            });
-        }
-        
-        function updateProgress() {
-            const answered = userAnswers.filter(a => a !== null).length;
-            const percentage = (answered / questions.length) * 100;
-            document.getElementById('progressFill').style.width = `${percentage}%`;
-        }
-        
-        function showQuestion(index) {
-            document.querySelectorAll('.question-card').forEach((card, i) => {
-                if (i === index) card.classList.add('active');
-                else card.classList.remove('active');
-            });
-            
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const submitBtn = document.getElementById('submitBtn');
-            
-            prevBtn.style.display = index === 0 ? 'none' : 'block';
-            
-            if (index === questions.length - 1) {
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'block';
-            } else {
-                nextBtn.style.display = 'block';
-                submitBtn.style.display = 'none';
-            }
-        }
-        
-        // إرسال الإجابات للتحليل
-        async function submitAnswers() {
-            // التحقق من الإجابة على جميع الأسئلة
-            if (userAnswers.includes(null)) {
-                alert('الرجاء الإجابة على جميع الأسئلة قبل المتابعة');
-                return;
-            }
-            
-            if (!selectedGender) {
-                alert('الرجاء اختيار الجنس');
-                return;
-            }
-            
-            // إخفاء الأسئلة وإظهار شاشة التحميل
-            document.getElementById('questionsArea').style.display = 'none';
-            document.getElementById('loading').style.display = 'block';
-            
-            try {
-                // تحضير الإجابات للإرسال
-                const answersPayload = questions.map((q, idx) => ({
-                    id: q._id || q.id,
-                    value: userAnswers[idx]
-                }));
-                
-                const response = await fetch('https://16personalities-api.com/api/personality', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        answers: answersPayload,
-                        gender: selectedGender
-                    })
-                });
-                
-                if (!response.ok) throw new Error('فشل في تحليل الشخصية');
-                
-                const result = await response.json();
-                showResult(result);
-                
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('questionsArea').style.display = 'block';
-                alert('حدث خطأ في تحليل الشخصية. يرجى المحاولة مرة أخرى.');
-            }
-        }
-        
-        function showResult(personalityResult) {
-            document.getElementById('loading').style.display = 'none';
-            
-            const personalityCode = personalityResult.fullCode; // مثل INTJ-A
-            const baseCode = personalityCode.split('-')[0]; // INTJ
-            
-            const animeMatch = personalityToAnime[baseCode] || personalityToAnime['INFP'];
-            
-            const resultArea = document.getElementById('resultArea');
-            resultArea.style.display = 'block';
-            resultArea.innerHTML = `
-                <div class="result-card">
-                    <div class="personality-badge">
-                        <div class="personality-code">${personalityResult.fullCode || baseCode}</div>
-                        <div class="personality-name">${personalityResult.niceName || 'شخصيتك'}</div>
-                    </div>
-                    
-                    <div class="anime-character">
-                        <h3>🎬 الشخصية الأنمي المناسبة لك:</h3>
-                        <img src="${animeMatch.image}" alt="${animeMatch.character}" class="character-image" onerror="this.src='https://via.placeholder.com/150?text=${animeMatch.character}'">
-                        <div class="character-name">${animeMatch.character}</div>
-                        <div class="character-source">من ${animeMatch.anime}</div>
-                        <div class="character-desc">${animeMatch.description}</div>
-                        
-                        <div class="strengths">
-                            <h4>✅ نقاط القوة</h4>
-                            <ul>
-                                ${animeMatch.strengths.map(s => `<li>${s}</li>`).join('')}
-                            </ul>
-                        </div>
-                        
-                        <div class="weaknesses">
-                            <h4>⚠️ نقاط الضعف</h4>
-                            <ul>
-                                ${animeMatch.weaknesses.map(w => `<li>${w}</li>`).join('')}
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <p style="margin-top: 20px; text-align: center; color: #666;">
-                        ${selectedGender === 'Male' ? 'أنت' : selectedGender === 'Female' ? 'أنتِ' : 'أنت'} تشبه هذه الشخصية في كثير من الصفات!
-                    </p>
-                </div>
-            `;
-        }
-        
-        // التنقل بين الأسئلة
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            if (userAnswers[currentQuestionIndex] !== null) {
-                currentQuestionIndex++;
-                showQuestion(currentQuestionIndex);
-                updateProgress();
-            } else {
-                alert('الرجاء الإجابة على السؤال الحالي قبل المتابعة');
-            }
-        });
-        
-        document.getElementById('prevBtn').addEventListener('click', () => {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                showQuestion(currentQuestionIndex);
-            }
-        });
-        
-        document.getElementById('submitBtn').addEventListener('click', submitAnswers);
-        
-        // اختيار الجنس
-        document.querySelectorAll('.gender-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                selectedGender = btn.dataset.gender;
-            });
-        });
-        
-        // بدء التطبيق
-        fetchQuestions();
-    </script>
-</body>
-</html>
+                image: 'https://i.imgur.com/yza567.png',
+                d
